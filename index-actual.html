@@ -103,37 +103,21 @@ var pie = new Chart(ctxpie, {
 });
   var numbers = 10;
   for (var i = 0; i < numbers; i++) {
-    addData(myLiveChart, i, [0, 0]);
+    myLiveChart.addData([0, 0], i);
   }
-  removeData(myLiveChart);
+  myLiveChart.removeData();
   latestLabel = startingData.labels[numbers-1];
 
   setInterval(function(){
     // Add two random numbers for each dataset
 
-    addData(myLiveChart, ++latestLabel, [(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)]);
+    myLiveChart.addData([(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)], ++latestLabel);
     // Remove the first point so we dont just add values forever
-    removeData(myLiveChart);
+    myLiveChart.removeData();
     pie.segments[1].value = Math.floor(statP2P.cdn/1024);
     pie.segments[0].value = Math.floor(statP2P.p2p/1024);
     pie.update();
   }, 5*1000);
-      
-    function addData(chart, label, data) {
-        chart.data.labels.push(label);
-        chart.data.datasets.forEach((dataset) => {
-            dataset.data.push(data);
-        });
-        chart.update();
-    }
-
-    function removeData(chart) {
-        chart.data.labels.pop();
-        chart.data.datasets.forEach((dataset) => {
-            dataset.data.pop();
-        });
-        chart.update();
-    }
 
   </script>
 </body>
