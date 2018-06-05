@@ -90,7 +90,7 @@ var ctxpie = canvas.getContext("2d");
 var pie = new Chart(ctxpie, {
     type: 'doughnut',
     data: data,
-    {animationSteps: 1}
+    options: {animationSteps: 1}
 });
       
     
@@ -99,7 +99,7 @@ var pie = new Chart(ctxpie, {
   var myLiveChart = new Chart(ctx, {
     type: 'line',
     data: startingData,
-    {animationSteps: 15}
+    options: {animationSteps: 15}
 });
   var numbers = 10;
   for (var i = 0; i < numbers; i++) {
