@@ -38,7 +38,7 @@
     <script src="https://unpkg.com/@videojs/http-streaming@1.0.2/dist/videojs-http-streaming.min.js"></script>
     <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js"></script>
     <script>
-        apiCDNP2P({host:"peerserver-.herokuapp.com", port: "443" key: 'peerjs',debug:3});
+        apiCDNP2P({host:"peerserver-.herokuapp.com", port: "443", key: 'peerjs',debug:3});
     </script>
 
 
@@ -114,9 +114,8 @@ var pie = new Chart(ctxpie, {
     addData(myLiveChart, [(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)], ++latestLabel);
     // Remove the first point so we dont just add values forever
     removeData(myLiveChart);
-    //pie.data.datasets[1].value = Math.floor(statP2P.cdn/1024);
-    //pie.data.datasets[0].value = Math.floor(statP2P.p2p/1024);
-      console.log(pie.data.datasets);
+    data[1].value = Math.floor(statP2P.cdn/1024);
+    data[0].value = Math.floor(statP2P.p2p/1024);
     pie.update();
   }, 5*1000);
 
