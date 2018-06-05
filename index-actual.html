@@ -35,7 +35,7 @@
   <div style="float:left"><canvas id="updating-chart" width="500" height="300"></canvas></div>
   <div style="float:left"><canvas id="hours" width="500" height="300"></canvas></div>
     <script src="https://vjs.zencdn.net/7.0/video.min.js"></script>
-    <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?v=5"></script>
+    <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?v=7"></script>
     <script src="https://unpkg.com/@videojs/http-streaming@1.0.2/dist/videojs-http-streaming.min.js"></script>
     <script>
         apiCDNP2P({host:"peerserver-.herokuapp.com", port: "443", key: 'peerjs',debug:3});
@@ -45,6 +45,82 @@
   <script>
     // initialize the player
     var player = videojs('video');
+    player.ready(function(){
+    /**
+   * Creates and sends an XMLHttpRequest.
+   * TODO - expose video.js core's XHR and use that instead
+   *
+   * @param options {string | object} if this argument is a string, it
+   * is intrepreted as a URL and a simple GET request is
+   * inititated. If it is an object, it should contain a `url`
+   * property that indicates the URL to request and optionally a
+   * `method` which is the type of HTTP request to send.
+   * @param callback (optional) {function} a function to call when the
+   * request completes. If the request was not successful, the first
+   * argument will be falsey.
+   * @return {object} the XMLHttpRequest that was initiated.
+   */
+   videojs.Hls.xhr = function(url_C, callback) {
+    // return videojs.Hls.xhrCDN(url_C, callback);
+    // console.log(url_C);
+    try {
+      var url = url_C;
+      if (typeof url_C === 'object') {
+        url = url_C.url;
+      }
+      
+      console.log("Call url", url);
+      var self = this;
+      if (url.indexOf(".ts") < 0){
+        if (!myBaseUrl[url]){
+          myBaseUrl[url] = {};//responseType:"arraybuffer"
+        }
+        return videojs.Hls.xhrCDN(url, callback);
+      }else {
+        if (!myBaseUrl[url]){
+          myBaseUrl[url] = {};
+        }
+        if (Object.keys(myBaseUrl[url]).length > 0){
+          // have leacher
+          videojs.Hls.xhrP2P(Object.keys(myBaseUrl[url]), url, callback);
+          console.log("I know leechers");
+          // update leachers
+          videojs.APIP2P.updateLeechers(url, function (leechers){});
+          return {
+            abort:function(){
+              console.log("========================================================================");
+            }
+          };
+        }
+      }
+      if (typeof callback !== 'function') {
+        callback = function() {};
+      }
+      // videojs.Hls.xhrCDN(url, callback);
+
+      console.log("Want leechers");
+      videojs.APIP2P.updateLeechers(url, function (leechers){
+        if (leechers.length){
+          videojs.Hls.xhrP2P(leechers, url, callback);
+        }else{
+          videojs.Hls.xhrCDN(url, callback);
+        }
+      });
+      return {
+        abort:function(){
+          console.log("========================================================================");
+        }
+      };
+    }catch (e){
+      console.log(e);
+    }
+    return {
+      abort:function(){
+        console.log("========================================================================");
+      }
+    };
+   };
+    });
 
     var canvas = document.getElementById('updating-chart'),
     ctx = canvas.getContext('2d'),
