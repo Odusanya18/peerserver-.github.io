@@ -87,10 +87,20 @@
 ];
 var canvas = document.getElementById("hours");
 var ctxpie = canvas.getContext("2d");
-var pie = new Chart(ctxpie).Doughnut(data,{animationSteps: 1});
+var pie = new Chart(ctxpie, {
+    type: 'doughnut',
+    data: data,
+    {animationSteps: 1}
+});
+      
     
   // Reduce the animation steps for demo clarity.
-  var myLiveChart = new Chart(ctx).Line(startingData, {animationSteps: 15});
+      
+  var myLiveChart = new Chart(ctx, {
+    type: 'line',
+    data: startingData,
+    {animationSteps: 15}
+});
   var numbers = 10;
   for (var i = 0; i < numbers; i++) {
     myLiveChart.addData([0, 0], i);
