@@ -103,37 +103,38 @@ var pie = new Chart(ctxpie, {
 });
   var numbers = 10;
   for (var i = 0; i < numbers; i++) {
-    myLiveChart.addData([0, 0], i);
+    addData(myLiveChart, i, [0, 0]);
   }
-  myLiveChart.removeData();
+  removeData(myLiveChart);
   latestLabel = startingData.labels[numbers-1];
 
   setInterval(function(){
     // Add two random numbers for each dataset
 
-    myLiveChart.addData([(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)], ++latestLabel);
+    addData(myLiveChart, ++latestLabel, [(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)]);
     // Remove the first point so we dont just add values forever
-    myLiveChart.removeData();
+    removeData(myLiveChart);
     pie.segments[1].value = Math.floor(statP2P.cdn/1024);
     pie.segments[0].value = Math.floor(statP2P.p2p/1024);
     pie.update();
   }, 5*1000);
+      
+    function addData(chart, label, data) {
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.push(data);
+        });
+        chart.update();
+    }
 
+    function removeData(chart) {
+        chart.data.labels.pop();
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data.pop();
+        });
+        chart.update();
+    }
 
   </script>
-
-  
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-58012638-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
-
-<a href="https://github.com/Iragne/PCDN"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
 </body>
 </html>
