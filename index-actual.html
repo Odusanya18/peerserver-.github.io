@@ -7,8 +7,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
         <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/peer.js"></script>
         <script src="https://vjs.zencdn.net/7.0/video.min.js"></script>
-        <script src="https://unpkg.com/@videojs/http-streaming@1.0.2/dist/videojs-http-streaming.min.js"></script>
-        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qr21sa"></script>
+        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/videojs-media-sources.js"></script>
+        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/videojs.hls.orig.js"></script>
+        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qr21zqa"></script>
+        <script>
+            //Only connect after Videojs has been loaded, and videojs.Hls.xhr has been overridden
+            apiCDNP2P({host:"peerhls.herokuapp.com", port: "443", key: 'peerjs',debug:3});
+        </script>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -27,8 +32,6 @@
   <div> 
   <video id="video"
          class="video-js vjs-default-skin"
-         height="300"
-         width="600"
          controls>
   </video>
 </div>
