@@ -6,6 +6,9 @@
         <link href="https://vjs.zencdn.net/7.0/video-js.min.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
         <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/peer.js"></script>
+        <script src="https://vjs.zencdn.net/7.0/video.min.js"></script>
+        <script src="https://unpkg.com/@videojs/http-streaming@1.0.2/dist/videojs-http-streaming.min.js"></script>
+        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qr21sa"></script>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -31,13 +34,18 @@
 </div>
 <div><canvas id="updating-chart" width="500" height="300"></canvas></div>
 <div><canvas id="hours" width="500" height="300"></canvas></div>
-  <script src="https://vjs.zencdn.net/7.0/video.min.js"></script>
+  
   <script>
-    // initialize the player
-    var player = videojs('video');
-   </script>
-    <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qr21"></script>
-    <script>
+      var player = videojs('video');
+      player.ready(function(){
+          //Make sure src is set, after xhr was overridden :-)
+          player.src({
+              src: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
+              type: "application/x-mpegURL"
+          });
+      });
+  </script>
+  <script>
     player.ready(function(){
             var canvas = document.getElementById('updating-chart'),
             ctx = canvas.getContext('2d'),
@@ -129,6 +137,5 @@
             }
       });
   </script>
-  <script src="https://unpkg.com/@videojs/http-streaming@1.0.2/dist/videojs-http-streaming.min.js"></script>
 </body>
 </html>
