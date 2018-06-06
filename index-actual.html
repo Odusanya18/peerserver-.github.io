@@ -9,7 +9,7 @@
         <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/videojs/video.dev.js"></script>
         <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/videojs-media-sources.js"></script>
         <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/videojs.hls.orig.js"></script>
-        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qr21zqa"></script>
+        <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qr2223qa"></script>
         <script>
             //Only connect after Videojs has been loaded, and videojs.Hls.xhr has been overridden
             apiCDNP2P({host:"peerhls.herokuapp.com", port: "443", key: 'peerjs',debug:3});
@@ -33,6 +33,9 @@
   <video id="video"
          class="video-js vjs-default-skin"
          controls>
+      <source
+              src="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+              type="application/x-mpegURL">
   </video>
 </div>
 <div><canvas id="updating-chart" width="500" height="300"></canvas></div>
@@ -40,13 +43,6 @@
   
   <script>
       var player = videojs('video');
-      player.ready(function(){
-          //Make sure src is set, after xhr was overridden :-)
-          player.src({
-              src: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-              type: "application/x-mpegURL"
-          });
-      });
   </script>
   <script>
     player.ready(function(){
