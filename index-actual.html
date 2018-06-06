@@ -21,19 +21,16 @@
         </style>
 </head>
 <body>
-  <div style="float:left" > 
+  <div> 
   <video id="video"
          class="video-js vjs-default-skin"
          height="300"
          width="600"
          controls>
-    <source
-       src="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
-       type="application/x-mpegURL">
   </video>
 </div>
-  <div style="float:left"><canvas id="updating-chart" width="500" height="300"></canvas></div>
-  <div style="float:left"><canvas id="hours" width="500" height="300"></canvas></div>
+<div><canvas id="updating-chart" width="500" height="300"></canvas></div>
+<div><canvas id="hours" width="500" height="300"></canvas></div>
     <script src="https://vjs.zencdn.net/7.0/video.min.js"></script>
     <script src="https://unpkg.com/@videojs/http-streaming@1.0.2/dist/videojs-http-streaming.min.js"></script>
 
@@ -42,98 +39,97 @@
     // initialize the player
     var player = videojs('video');
 
-    var canvas = document.getElementById('updating-chart'),
-    ctx = canvas.getContext('2d'),
-    startingData = {
-      labels: [0],
-      datasets: [
-          {
-              fillColor: "rgba(220,0,0,0.2)",
-              strokeColor: "rgba(220,220,220,1)",
-              pointColor: "rgba(220,220,220,1)",
-              pointStrokeColor: "#fff",
-              data: [0],
-              label:"CDN"
-          },
-          {
-              fillColor: "rgba(0,187,0,0.2)",
-              strokeColor: "rgba(0,187,0,1)",
-              pointColor: "rgba(0,187,0,1)",
-              pointStrokeColor: "#fff",
-              data: [0],
-              label:"P2P"
+    player.ready(function(){
+            var canvas = document.getElementById('updating-chart'),
+            ctx = canvas.getContext('2d'),
+            startingData = {
+              labels: [0],
+              datasets: [
+                  {
+                      fillColor: "rgba(220,0,0,0.2)",
+                      strokeColor: "rgba(220,220,220,1)",
+                      pointColor: "rgba(220,220,220,1)",
+                      pointStrokeColor: "#fff",
+                      data: [0],
+                      label:"CDN"
+                  },
+                  {
+                      fillColor: "rgba(0,187,0,0.2)",
+                      strokeColor: "rgba(0,187,0,1)",
+                      pointColor: "rgba(0,187,0,1)",
+                      pointStrokeColor: "#fff",
+                      data: [0],
+                      label:"P2P"
+                  }
+              ]
+            };
+
+            var data = [
+
+            {
+                value : 1,
+                color : "#2c9c69",
+                label:"P2P"
+            },
+
+            {
+                value : 1,
+                color : "#c62f29",
+                label : "CDN"
+            }
+
+        ];
+        var canvas = document.getElementById("hours");
+        var ctxpie = canvas.getContext("2d");
+        var pie = new Chart(ctxpie, {
+            type: 'doughnut',
+            data: data,
+            options: {animationSteps: 1}
+        });
+
+
+          // Reduce the animation steps for demo clarity.
+
+          var myLiveChart = new Chart(ctx, {
+            type: 'line',
+            data: startingData,
+            options: {animationSteps: 15}
+        });
+          var numbers = 10;
+          for (var i = 0; i < numbers; i++) {
+            addData(myLiveChart, [0, 0], i);
           }
-      ]
-    };
+          removeData(myLiveChart);
+          latestLabel = startingData.labels[numbers-1];
 
-    var data = [
-    
-    {
-        value : 1,
-        color : "#2c9c69",
-        label:"P2P"
-    },
-    
-    {
-        value : 1,
-        color : "#c62f29",
-        label : "CDN"
-    }
+          setInterval(function(){
+            // Add two random numbers for each dataset
 
-];
-var canvas = document.getElementById("hours");
-var ctxpie = canvas.getContext("2d");
-var pie = new Chart(ctxpie, {
-    type: 'doughnut',
-    data: data,
-    options: {animationSteps: 1}
-});
-      
-    
-  // Reduce the animation steps for demo clarity.
-      
-  var myLiveChart = new Chart(ctx, {
-    type: 'line',
-    data: startingData,
-    options: {animationSteps: 15}
-});
-  var numbers = 10;
-  for (var i = 0; i < numbers; i++) {
-    addData(myLiveChart, [0, 0], i);
-  }
-  removeData(myLiveChart);
-  latestLabel = startingData.labels[numbers-1];
+            addData(myLiveChart, [(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)], ++latestLabel);
+            // Remove the first point so we dont just add values forever
+            removeData(myLiveChart);
+            data[1].value = Math.floor(statP2P.cdn/1024);
+            data[0].value = Math.floor(statP2P.p2p/1024);
+            pie.update();
+          }, 5*1000);
 
-  setInterval(function(){
-    // Add two random numbers for each dataset
+            function addData(chart, data, label) {
+                chart.data.labels.push(label);
+                chart.data.datasets.forEach(function(dataset){
+                    dataset.data.push(data);
+                });
+                chart.update();
+            }
 
-    addData(myLiveChart, [(statP2P.cdn/1024/1024).toFixed(2), (statP2P.p2p/1024/1024).toFixed(2)], ++latestLabel);
-    // Remove the first point so we dont just add values forever
-    removeData(myLiveChart);
-    data[1].value = Math.floor(statP2P.cdn/1024);
-    data[0].value = Math.floor(statP2P.p2p/1024);
-    pie.update();
-  }, 5*1000);
-
-    function addData(chart, data, label) {
-        chart.data.labels.push(label);
-        chart.data.datasets.forEach(function(dataset){
-            dataset.data.push(data);
-        });
-        chart.update();
-    }
-
-    function removeData(chart) {
-        chart.data.labels.pop();
-        chart.data.datasets.forEach(function(dataset){
-            dataset.data.pop();
-        });
-        chart.update();
-    }
+            function removeData(chart) {
+                chart.data.labels.pop();
+                chart.data.datasets.forEach(function(dataset){
+                    dataset.data.pop();
+                });
+                chart.update();
+            }
+      });
   </script>
-    <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?v=129gg76h"></script>
-    <script>
-        apiCDNP2P({host:"peerhls.herokuapp.com", port: "443", key: 'peerjs',debug:3});
-    </script>
+  <script src="https://rawgit.com/Odusanya18/PCDN/master/client/js/apiCDNP2P.js?x=qrw"></script>
 </body>
 </html>
